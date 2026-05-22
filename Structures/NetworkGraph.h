@@ -27,6 +27,12 @@ public:
     // Creates a mutual friendship (undirected edge) between two users
     void addFriendship(int id1, int id2);
     
+    // Removes a mutual friendship between two users
+    void removeFriendship(int id1, int id2);
+
+    // Deletes a user and all their friendships from the graph
+    void removeUser(int targetID);
+
     // Searches for and returns a pointer to a user with the given ID
     UserNode* findUser(int targetID);
     

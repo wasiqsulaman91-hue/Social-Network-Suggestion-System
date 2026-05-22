@@ -1,0 +1,8 @@
+# Compiled Binaries
+*.exe
+*.dll
+bin/*.exe
+bin/*.dll
+
+# Object files
+*.o
