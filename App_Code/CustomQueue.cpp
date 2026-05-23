@@ -2,27 +2,33 @@
 #include <stdexcept>
 
 CustomQueue::CustomQueue() {
-    frontPtr = nullptr;
-    rearPtr = nullptr;
+    frontPtr = nullptr;    
+    rearPtr = nullptr;  
 }
 
+
 CustomQueue::~CustomQueue() {
+    
     while (!isEmpty()) {
-        dequeue();
+        dequeue();        
     }
 }
+
 
 void CustomQueue::enqueue(int value) {
     QueueNode* newNode = new QueueNode(value);
-    
+
     if (rearPtr == nullptr) {
-        frontPtr = newNode;
-        rearPtr = newNode;
+
+        frontPtr = newNode;     
+        rearPtr = newNode;     
     } else {
-        rearPtr->next = newNode;
-        rearPtr = newNode;
+
+        rearPtr->next = newNode;  
+        rearPtr = newNode;        
     }
 }
+
 
 int CustomQueue::dequeue() {
     if (isEmpty()) {
@@ -30,7 +36,10 @@ int CustomQueue::dequeue() {
     }
     
     QueueNode* tempNode = frontPtr;
+    
     int value = tempNode->data;
+    
+
     frontPtr = frontPtr->next;
     
     if (frontPtr == nullptr) {
@@ -38,7 +47,7 @@ int CustomQueue::dequeue() {
     }
     
     delete tempNode;
-    tempNode = nullptr;
+    tempNode = nullptr;     
     
     return value;
 }

@@ -15,6 +15,7 @@ struct QueueNode {
 class CustomQueue {
 private:
     QueueNode* frontPtr;  
+    QueueNode* rearPtr;   
     
 public:
     CustomQueue(); 
