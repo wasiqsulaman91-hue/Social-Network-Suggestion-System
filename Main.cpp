@@ -23,10 +23,10 @@ int main()
 
     // Create main application window (1100px wide, 700px tall)
     // Disabled resizing by explicitly setting the window style to Titlebar | Close
-    sf::RenderWindow window(sf::VideoMode({1100, 700}), "Social Network Analyzer - DSA Project", sf::Style::Titlebar | sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode({1100, 700}), "Social Network Analyzer", sf::Style::Titlebar | sf::Style::Close);
 
     // Set frame rate limit for smooth rendering
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(30);
 
     // Load font for text rendering
     sf::Font font;
@@ -54,14 +54,14 @@ int main()
     // Add sample users to the network with specific coordinates for visual layout
     // Users are positioned in a spatially distributed manner across the canvas
 
-    network.addUser(1, "Alice", 150.0f, 150.0f);   // Top-left region
-    network.addUser(2, "Bob", 350.0f, 100.0f);     // Top-center region
-    network.addUser(3, "Charlie", 550.0f, 150.0f); // Top-right region
-    network.addUser(4, "Diana", 150.0f, 350.0f);   // Middle-left region
-    network.addUser(5, "Eve", 350.0f, 300.0f);     // Center region
-    network.addUser(6, "Frank", 550.0f, 350.0f);   // Middle-right region
-    network.addUser(7, "Grace", 250.0f, 500.0f);   // Bottom-left region
-    network.addUser(8, "Hank", 450.0f, 500.0f);    // Bottom-right region
+    network.addUser(1, "Wasiq", 150.0f, 150.0f);   // Top-left region
+    network.addUser(2, "Shariq", 350.0f, 100.0f);     // Top-center region
+    network.addUser(3, "Shameen", 550.0f, 150.0f); // Top-right region
+    network.addUser(4, "Zainab", 150.0f, 350.0f);   // Middle-left region
+    network.addUser(5, "Farwa", 350.0f, 300.0f);     // Center region
+    network.addUser(6, "Zohaib", 550.0f, 350.0f);   // Middle-right region
+    network.addUser(7, "Muneeb", 250.0f, 500.0f);   // Bottom-left region
+    network.addUser(8, "Mazhar", 450.0f, 500.0f);    // Bottom-right region
 
     // Create friendship connections (undirected edges) between users
     // This creates a sample social network with specific connectivity patterns
