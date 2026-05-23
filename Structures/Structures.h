@@ -2,6 +2,8 @@
 #define STRUCTURES_H
 #include <string>
 
+using namespace std;
+
 struct FriendNode {
     int friendID;        
     FriendNode* next;   
@@ -21,7 +23,7 @@ struct UserNode {
     FriendNode* friendsHead;
     UserNode* next;        
    
-    UserNode(int userId, std::string userName, float posX, float posY) {
+    UserNode(int userId, string userName, float posX, float posY) {
         id = userId;      
         name = userName;    
         x = posX;      

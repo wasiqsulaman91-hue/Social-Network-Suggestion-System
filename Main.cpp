@@ -8,6 +8,8 @@
 #include "Structures/NetworkGraph.h"
 #include "Structures/Recommendation_System.h"
 
+using namespace std;
+
 int main()
 {
     sf::RenderWindow window(sf::VideoMode({1100, 700}), "Social Network Analyzer", sf::Style::Titlebar | sf::Style::Close);
@@ -21,7 +23,7 @@ int main()
     {
         if (!font.openFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"))
         {
-            std::cerr << "\n[ERROR] Failed to load fonts. Please copy a .ttf file (like arial.ttf) into your project folder!\n";
+            cerr << "\n[ERROR] Failed to load fonts. Please copy a .ttf file (like arial.ttf) into your project folder!\n";
             return -1;
         }
     }
@@ -62,7 +64,7 @@ int main()
         WAITING_FOR_RENAME
     };
     AppState currentState = NORMAL;
-    std::string inputString = "";
+    string inputString = "";
     int edgeNode1 = -1;
     sf::Vector2f newNodePos;
     int nextNodeID = 9;
@@ -201,25 +203,25 @@ int main()
             glow.setPointCount(60);
             glow.setOrigin(sf::Vector2f(radius, radius));
             glow.setPosition(sf::Vector2f(
-                120.0f + static_cast<float>(i) * 140.0f + std::sin(animationTime * 0.6f + static_cast<float>(i)) * 10.0f,
-                120.0f + static_cast<float>(i % 2) * 110.0f + std::cos(animationTime * 0.5f + static_cast<float>(i)) * 8.0f));
+                120.0f + static_cast<float>(i) * 140.0f + sin(animationTime * 0.6f + static_cast<float>(i)) * 10.0f,
+                120.0f + static_cast<float>(i % 2) * 110.0f + cos(animationTime * 0.5f + static_cast<float>(i)) * 8.0f));
             glow.setFillColor(sf::Color(255, 255, 255, 10));
             window.draw(glow);
         }
 
         sf::RectangleShape sidebar(sf::Vector2f(400.0f, 700.0f));
         sidebar.setPosition(sf::Vector2f(700.0f + sidebarOffset, 0.0f));
-        sidebar.setFillColor(sf::Color(42, 44, 54, static_cast<std::uint8_t>(235.0f * sidebarAlpha)));
+        sidebar.setFillColor(sf::Color(42, 44, 54, static_cast<uint8_t>(235.0f * sidebarAlpha)));
         window.draw(sidebar);
 
         sf::Text titleText(font, "Social Network Analyzer", 22);
-        titleText.setFillColor(sf::Color(255, 255, 255, static_cast<std::uint8_t>(255.0f * sidebarAlpha)));
+        titleText.setFillColor(sf::Color(255, 255, 255, static_cast<uint8_t>(255.0f * sidebarAlpha)));
         titleText.setPosition(sf::Vector2f(720.0f + sidebarOffset, 20.0f));
         titleText.setStyle(sf::Text::Bold);
         window.draw(titleText);
 
         sf::Text subtitleText(font, "Click a user to view details", 14);
-        subtitleText.setFillColor(sf::Color(200, 200, 200, static_cast<std::uint8_t>(255.0f * sidebarAlpha)));
+        subtitleText.setFillColor(sf::Color(200, 200, 200, static_cast<uint8_t>(255.0f * sidebarAlpha)));
         subtitleText.setPosition(sf::Vector2f(720.0f + sidebarOffset, 50.0f));
         window.draw(subtitleText);
 
@@ -241,11 +243,11 @@ int main()
                     {
                         sf::Vertex startVertex;
                         startVertex.position = sf::Vector2f(currentUser->x, currentUser->y);
-                        startVertex.color = sf::Color(180, 180, 180, static_cast<std::uint8_t>(145.0f + 10.0f * std::sin(animationTime * 2.0f)));
+                        startVertex.color = sf::Color(180, 180, 180, static_cast<uint8_t>(145.0f + 10.0f * sin(animationTime * 2.0f)));
 
                         sf::Vertex endVertex;
                         endVertex.position = sf::Vector2f(friendUser->x, friendUser->y);
-                        endVertex.color = sf::Color(180, 180, 180, static_cast<std::uint8_t>(145.0f + 10.0f * std::sin(animationTime * 2.0f)));
+                        endVertex.color = sf::Color(180, 180, 180, static_cast<uint8_t>(145.0f + 10.0f * sin(animationTime * 2.0f)));
 
                         edges.append(startVertex);
                         edges.append(endVertex);
@@ -265,13 +267,13 @@ int main()
         while (currentUser != nullptr)
         {
             sf::Color nodeColor = sf::Color(255, 255, 255);
-            float nodeBob = std::sin(animationTime * 1.6f + static_cast<float>(currentUser->id)) * 3.0f;
-            float nodeScale = 1.0f + std::sin(animationTime * 2.0f + static_cast<float>(currentUser->id)) * 0.03f;
+            float nodeBob = sin(animationTime * 1.6f + static_cast<float>(currentUser->id)) * 3.0f;
+            float nodeScale = 1.0f + sin(animationTime * 2.0f + static_cast<float>(currentUser->id)) * 0.03f;
 
             if (activeUserID != -1 && currentUser->id == activeUserID)
             {
                 nodeColor = sf::Color(70, 130, 255);
-                nodeScale = 1.08f + std::sin(animationTime * 4.0f) * 0.04f;
+                nodeScale = 1.08f + sin(animationTime * 4.0f) * 0.04f;
             }
             else if (activeUserID != -1)
             {
@@ -313,7 +315,7 @@ int main()
                     if (isSuggested)
                     {
                         nodeColor = sf::Color(255, 215, 0);
-                        nodeScale = 1.03f + std::sin(animationTime * 3.0f + static_cast<float>(currentUser->id)) * 0.02f;
+                        nodeScale = 1.03f + sin(animationTime * 3.0f + static_cast<float>(currentUser->id)) * 0.02f;
                     }
                     else
                     {
@@ -369,7 +371,7 @@ int main()
                     friendCounter = friendCounter->next;
                 }
 
-                std::ostringstream oss;
+                ostringstream oss;
                 oss << "Direct Friends: " << friendCount;
                 sf::Text friendCountText(font, oss.str(), 16);
                 friendCountText.setFillColor(sf::Color(255, 255, 255));
@@ -392,7 +394,7 @@ int main()
                     if (friendUser != nullptr)
                     {
                         sf::Text friendName(font, "- " + friendUser->name, 13);
-                        friendName.setFillColor(sf::Color(200, 200, 200, static_cast<std::uint8_t>(255.0f * sidebarAlpha)));
+                        friendName.setFillColor(sf::Color(200, 200, 200, static_cast<uint8_t>(255.0f * sidebarAlpha)));
                         friendName.setPosition(sf::Vector2f(730.0f + sidebarOffset, static_cast<float>(yOffset)));
                         window.draw(friendName);
 
@@ -425,13 +427,13 @@ int main()
 
                         if (suggestedUser != nullptr)
                         {
-                            std::ostringstream suggestionText;
+                            ostringstream suggestionText;
                             suggestionText << "- " << suggestedUser->name
                                            << " (" << suggestions[i].mutualCount
                                            << " mutual)";
 
                             sf::Text suggestion(font, suggestionText.str(), 13);
-                            suggestion.setFillColor(sf::Color(220, 220, 220, static_cast<std::uint8_t>(255.0f * sidebarAlpha)));
+                            suggestion.setFillColor(sf::Color(220, 220, 220, static_cast<uint8_t>(255.0f * sidebarAlpha)));
                             suggestion.setPosition(sf::Vector2f(730.0f + sidebarOffset, static_cast<float>(yOffset)));
                             window.draw(suggestion);
 
@@ -449,11 +451,6 @@ int main()
             window.draw(instructionText);
         }
 
-        sf::Text legendTitle(font, "Color Legend:", 14);
-        legendTitle.setFillColor(sf::Color(255, 255, 255));
-        legendTitle.setPosition(sf::Vector2f(720.0f + sidebarOffset, 620.0f));
-        legendTitle.setStyle(sf::Text::Bold);
-        window.draw(legendTitle);
 
         sf::CircleShape blueCircle(8.0f);
         blueCircle.setPointCount(30);
@@ -488,7 +485,7 @@ int main()
         goldLabel.setPosition(sf::Vector2f(1010.0f + sidebarOffset, 645.0f));
         window.draw(goldLabel);
 
-        auto drawButton = [&](const std::string& text, float x, float y, bool active) {
+        auto drawButton = [&](const string& text, float x, float y, bool active) {
             sf::RectangleShape btn(sf::Vector2f(175.0f, 35.0f));
             btn.setPosition(sf::Vector2f(x, y));
             btn.setFillColor(active ? sf::Color(100, 150, 200, 200) : sf::Color(60, 65, 75, 200));

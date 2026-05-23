@@ -1,4 +1,7 @@
 #include "../Structures/NetworkGraph.h"
+#include <string>
+
+using namespace std;
 
 NetworkGraph::NetworkGraph() {
     masterHead = nullptr;
@@ -26,7 +29,7 @@ NetworkGraph::~NetworkGraph() {
     masterHead = nullptr;
 }
 
-void NetworkGraph::addUser(int id, std::string name, float x, float y) {
+void NetworkGraph::addUser(int id, string name, float x, float y) {
     UserNode* newUser = new UserNode(id, name, x, y);
     
     if (masterHead == nullptr) {

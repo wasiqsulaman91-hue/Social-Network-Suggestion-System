@@ -1,6 +1,8 @@
 #include "../Structures/CustomQueue.h"
 #include <stdexcept>
 
+using namespace std;
+
 CustomQueue::CustomQueue() {
     frontPtr = nullptr;    
     rearPtr = nullptr;  
@@ -32,7 +34,7 @@ void CustomQueue::enqueue(int value) {
 
 int CustomQueue::dequeue() {
     if (isEmpty()) {
-        throw std::runtime_error("Cannot dequeue from empty queue");
+        throw runtime_error("Cannot dequeue from empty queue");
     }
     
     QueueNode* tempNode = frontPtr;
