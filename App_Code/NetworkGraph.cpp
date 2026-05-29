@@ -7,40 +7,40 @@ NetworkGraph::NetworkGraph() {
     masterHead = nullptr;
 }
 
-NetworkGraph::~NetworkGraph() {
+NetworkGraph::~NetworkGraph(){
     UserNode* currentUser = masterHead;
-    
-    while (currentUser != nullptr) {
+
+    while(currentUser != nullptr){
         FriendNode* currentFriend = currentUser->friendsHead;
-        
-        while (currentFriend != nullptr) {
+
+        while(currentFriend != nullptr){
             FriendNode* tempFriend = currentFriend;
             currentFriend = currentFriend->next;
             delete tempFriend;
             tempFriend = nullptr;
         }
-        
+
         UserNode* tempUser = currentUser;
         currentUser = currentUser->next;
         delete tempUser;
         tempUser = nullptr;
     }
-    
+
     masterHead = nullptr;
 }
 
-void NetworkGraph::addUser(int id, string name, float x, float y) {
+void NetworkGraph::addUser(int id, string name, float x, float y){
     UserNode* newUser = new UserNode(id, name, x, y);
-    
-    if (masterHead == nullptr) {
+
+    if(masterHead == nullptr){
         masterHead = newUser;
-    } else {
+    }else{
         UserNode* currentUser = masterHead;
         
-        while (currentUser->next != nullptr) {
+        while(currentUser->next != nullptr){
             currentUser = currentUser->next;
         }
-        
+
         currentUser->next = newUser;
     }
 }

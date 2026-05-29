@@ -1,12 +1,12 @@
 #ifndef CUSTOMQUEUE_H
 #define CUSTOMQUEUE_H
 
-struct QueueNode {
+class Node {
+public:
     int data;               
-    QueueNode* next;      
+    Node* next;      
     
-
-    QueueNode(int value) {
+    Node(int value) {
         data = value;       
         next = nullptr;    
     }
@@ -14,8 +14,8 @@ struct QueueNode {
 
 class CustomQueue {
 private:
-    QueueNode* frontPtr;  
-    QueueNode* rearPtr;   
+    Node* frontPtr;  
+    Node* rearPtr;   
     
 public:
     CustomQueue(); 

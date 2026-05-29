@@ -1,13 +1,13 @@
 #ifndef STRUCTURES_H
 #define STRUCTURES_H
 #include <string>
-
 using namespace std;
 
-struct FriendNode {
+class FriendNode {
+public:
     int friendID;        
     FriendNode* next;   
-    
+
 
     FriendNode(int id) {
         friendID = id;     
@@ -15,9 +15,10 @@ struct FriendNode {
     }
 };
 
-struct UserNode {
+class UserNode {
+public:
     int id;               
-    std::string name;     
+    string name;     
     float x;              
     float y;              
     FriendNode* friendsHead;
@@ -34,7 +35,8 @@ struct UserNode {
 };
 
 
-struct Suggestion {
+class Suggestion {
+public:
     int userID;          
     int mutualCount;   
     

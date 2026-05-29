@@ -4,13 +4,11 @@
 using namespace std;
 
 CustomQueue::CustomQueue() {
-    frontPtr = nullptr;    
-    rearPtr = nullptr;  
+    frontPtr = rearPtr = nullptr;      
 }
 
 
-CustomQueue::~CustomQueue() {
-    
+CustomQueue::~CustomQueue() {    
     while (!isEmpty()) {
         dequeue();        
     }
@@ -18,12 +16,10 @@ CustomQueue::~CustomQueue() {
 
 
 void CustomQueue::enqueue(int value) {
-    QueueNode* newNode = new QueueNode(value);
+    Node* newNode = new Node(value);
 
     if (rearPtr == nullptr) {
-
-        frontPtr = newNode;     
-        rearPtr = newNode;     
+        frontPtr = rearPtr = newNode;          
     } else {
 
         rearPtr->next = newNode;  
@@ -37,23 +33,20 @@ int CustomQueue::dequeue() {
         throw runtime_error("Cannot dequeue from empty queue");
     }
     
-    QueueNode* tempNode = frontPtr;
-    
-    int value = tempNode->data;
-    
-
+    Node* temp = frontPtr;   
+    int value = temp->data;
     frontPtr = frontPtr->next;
     
     if (frontPtr == nullptr) {
         rearPtr = nullptr;
     }
     
-    delete tempNode;
-    tempNode = nullptr;     
+    delete temp;
+    temp = nullptr;     
     
     return value;
 }
 
-bool CustomQueue::isEmpty() {
-    return (frontPtr == nullptr);
+bool CustomQueue::isEmpty(){
+    return frontPtr == nullptr;
 }
