@@ -13,57 +13,54 @@ using namespace sf;
 
 int main()
 {
-    RenderWindow window(VideoMode({1100, 700}), "Social Network Analyzer", Style::Titlebar | Style::Close);
+    RenderWindow window(VideoMode({1100, 700}), "SUPER SPY", Style::Titlebar | Style::Close);
 
     window.setFramerateLimit(60);
 
     Font font;
-    if (!font.openFromFile("arial.ttf") &&
-        !font.openFromFile("C:\\Windows\\Fonts\\Arial.ttf") && 
-        !font.openFromFile("C:\\Windows\\Fonts\\arial.ttf"))
-    {
-        if (!font.openFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"))
-        {
-            cerr << "\n[ERROR] Failed to load fonts. Please copy a .ttf file (like arial.ttf) into your project folder!\n";
-            return -1;
-        }
+
+    if (!font.openFromFile("arial.ttf") && !font.openFromFile("C:\\Windows\\Fonts\\Arial.ttf")){
+        cerr << "\n[ERROR] Failed to load font!\n";
+        return -1;
     }
 
-    NetworkGraph network;
+    NetworkGraph n;
 
-    network.addUser(1, "Wasiq", 150.0f, 150.0f);
-    network.addUser(2, "Shariq", 350.0f, 100.0f);
-    network.addUser(3, "Shameen", 550.0f, 150.0f);
-    network.addUser(4, "Zainab", 150.0f, 350.0f);
-    network.addUser(5, "Farwa", 350.0f, 300.0f);
-    network.addUser(6, "Zohaib", 550.0f, 350.0f);
-    network.addUser(7, "Muneeb", 250.0f, 500.0f);
-    network.addUser(8, "Mazhar", 450.0f, 500.0f);
 
-    network.addFriendship(1, 2);
-    network.addFriendship(1, 4);
-    network.addFriendship(2, 3);
-    network.addFriendship(2, 5);
-    network.addFriendship(3, 6);
-    network.addFriendship(4, 5);
-    network.addFriendship(4, 7);
-    network.addFriendship(5, 6);
-    network.addFriendship(5, 8);
-    network.addFriendship(6, 8);
-    network.addFriendship(7, 8);
+    n.addUser(1, "Wasiq", 150.0f, 150.0f);
+    n.addUser(2, "Shariq", 350.0f, 100.0f);
+    n.addUser(3, "Shameen", 550.0f, 150.0f);
+    n.addUser(4, "Zainab", 150.0f, 350.0f);
+    n.addUser(5, "Farwa", 350.0f, 300.0f);
+    n.addUser(6, "Zohaib", 550.0f, 350.0f);
+    n.addUser(7, "Muneeb", 250.0f, 500.0f);
+    n.addUser(8, "Mazhar", 450.0f, 500.0f);
+
+    n.addFriendship(1, 2);
+    n.addFriendship(1, 4);
+    n.addFriendship(2, 3);
+    n.addFriendship(2, 5);
+    n.addFriendship(3, 6);
+    n.addFriendship(4, 5);
+    n.addFriendship(4, 7);
+    n.addFriendship(5, 6);
+    n.addFriendship(5, 8);
+    n.addFriendship(6, 8);
+    n.addFriendship(7, 8);
 
     int activeUserID = -1;
     Suggestion suggestions[50];
     int suggestionCount = 0;
 
-    enum AppState {
-        NORMAL,
-        WAITING_FOR_NODE_POS,
+    enum AppState{
+        NORMAL, 
+        WAITING_FOR_NODE_POSITION,
         WAITING_FOR_NODE_NAME,
         WAITING_FOR_EDGE_NODE1,
         WAITING_FOR_EDGE_NODE2,
         WAITING_FOR_RENAME
     };
+
     AppState currentState = NORMAL;
     string inputString = "";
     int edgeNode1 = -1;
@@ -72,32 +69,27 @@ int main()
 
     Clock animationClock;
 
-    while (window.isOpen())
-    {
+    while (window.isOpen()){
         float animationTime = animationClock.getElapsedTime().asSeconds();
         float sidebarReveal = animationTime < 1.0f ? animationTime : 1.0f;
         float sidebarOffset = (1.0f - sidebarReveal) * 80.0f;
         float sidebarAlpha = sidebarReveal;
 
-        while (const auto event = window.pollEvent())
-        {
-            if (event->is<Event::Closed>())
-            {
+        while (const auto event = window.pollEvent()){
+            if (event->is<Event::Closed>()){
                 window.close();
             }
 
-            if (const auto* textEvent = event->getIf<Event::TextEntered>())
-            {
-                if (currentState == WAITING_FOR_NODE_NAME || currentState == WAITING_FOR_RENAME)
-                {
+            if (const auto* textEvent = event->getIf<Event::TextEntered>()){
+                if (currentState == WAITING_FOR_NODE_NAME || currentState == WAITING_FOR_RENAME){
                     if (textEvent->unicode == '\b') {
                         if (!inputString.empty()) inputString.pop_back();
                     } else if (textEvent->unicode == '\r' || textEvent->unicode == '\n') {
                         if (!inputString.empty()) {
                             if (currentState == WAITING_FOR_NODE_NAME) {
-                                network.addUser(nextNodeID++, inputString, newNodePos.x, newNodePos.y);
+                                n.addUser(nextNodeID++, inputString, newNodePos.x, newNodePos.y);
                             } else if (currentState == WAITING_FOR_RENAME && activeUserID != -1) {
-                                UserNode* u = network.findUser(activeUserID);
+                                UserNode* u = n.findUser(activeUserID);
                                 if (u) u->name = inputString;
                             }
                             currentState = NORMAL;
@@ -123,7 +115,7 @@ int main()
                     FloatRect btnRename(Vector2f(720.0f + sidebarOffset, 565.0f), Vector2f(175.0f, 35.0f));
                     FloatRect btnDelete(Vector2f(905.0f + sidebarOffset, 565.0f), Vector2f(175.0f, 35.0f));
 
-                    if (btnAddUser.contains(mousePos)) { currentState = WAITING_FOR_NODE_POS; buttonClicked = true; }
+                    if (btnAddUser.contains(mousePos)) { currentState = WAITING_FOR_NODE_POSITION; buttonClicked = true; }
                     else if (btnAddEdge.contains(mousePos)) { currentState = WAITING_FOR_EDGE_NODE1; buttonClicked = true; }
                     else if (btnRename.contains(mousePos)) { 
                         if (activeUserID != -1) { currentState = WAITING_FOR_RENAME; inputString = ""; }
@@ -131,7 +123,7 @@ int main()
                     }
                     else if (btnDelete.contains(mousePos)) { 
                         if (activeUserID != -1) { 
-                            network.removeUser(activeUserID); 
+                            n.removeUser(activeUserID); 
                             activeUserID = -1; 
                             suggestionCount = 0;
                             currentState = NORMAL;
@@ -139,41 +131,36 @@ int main()
                         buttonClicked = true; 
                     }
 
-                    if (!buttonClicked) {
-                        if (currentState == WAITING_FOR_NODE_POS) {
-                            if (mousePos.x < 700.0f) {
+                    if (!buttonClicked){
+                        if (currentState == WAITING_FOR_NODE_POSITION){
+                            if (mousePos.x < 700.0f){
                                 newNodePos = mousePos;
                                 currentState = WAITING_FOR_NODE_NAME;
                                 inputString = "";
                             }
-                        } else if (currentState != WAITING_FOR_NODE_NAME && currentState != WAITING_FOR_RENAME) {
-                            UserNode *clickUser = network.getMasterHead();
+                        }else if(currentState != WAITING_FOR_NODE_NAME && currentState != WAITING_FOR_RENAME){
+                            UserNode *clickUser = n.getMasterHead();
                             bool userClicked = false;
-                            
-                            while (clickUser != nullptr)
-                            {
+                            while (clickUser != nullptr){
                                 CircleShape nodeCircle(20.0f);
                                 nodeCircle.setPosition(Vector2f(clickUser->x - 20.0f, clickUser->y - 20.0f));
-                                
-                                if (nodeCircle.getGlobalBounds().contains(mousePos))
-                                {
+                                if (nodeCircle.getGlobalBounds().contains(mousePos)){
                                     userClicked = true;
-                                    
-                                    if (currentState == WAITING_FOR_EDGE_NODE1) {
+                                    if (currentState == WAITING_FOR_EDGE_NODE1){
                                         edgeNode1 = clickUser->id;
                                         currentState = WAITING_FOR_EDGE_NODE2;
-                                    } else if (currentState == WAITING_FOR_EDGE_NODE2) {
-                                        if (clickUser->id != edgeNode1) {
-                                            network.addFriendship(edgeNode1, clickUser->id);
+                                    } else if (currentState == WAITING_FOR_EDGE_NODE2){
+                                        if (clickUser->id != edgeNode1){
+                                            n.addFriendship(edgeNode1, clickUser->id);
                                             currentState = NORMAL;
                                             if (activeUserID != -1) {
-                                                suggestionCount = RecommendationEngine::computeMutualFriends(network.getMasterHead(), activeUserID, suggestions);
+                                                suggestionCount = RecommendationEngine::computeMutualFriends(n.getMasterHead(), activeUserID, suggestions);
                                             }
                                         }
                                     } else {
                                         activeUserID = clickUser->id;
                                         suggestionCount = RecommendationEngine::computeMutualFriends(
-                                            network.getMasterHead(),
+                                            n.getMasterHead(),
                                             activeUserID,
                                             suggestions);
                                         currentState = NORMAL;
@@ -215,7 +202,7 @@ int main()
         sidebar.setFillColor(Color(42, 44, 54, static_cast<uint8_t>(235.0f * sidebarAlpha)));
         window.draw(sidebar);
 
-        Text titleText(font, "Social Network Analyzer", 22);
+        Text titleText(font, "Social n Analyzer", 22);
         titleText.setFillColor(Color(255, 255, 255, static_cast<uint8_t>(255.0f * sidebarAlpha)));
         titleText.setPosition(Vector2f(720.0f + sidebarOffset, 20.0f));
         titleText.setStyle(Text::Bold);
@@ -228,7 +215,7 @@ int main()
 
         VertexArray edges(PrimitiveType::Lines);
 
-        UserNode *currentUser = network.getMasterHead();
+        UserNode *currentUser = n.getMasterHead();
 
         while (currentUser != nullptr)
         {
@@ -236,7 +223,7 @@ int main()
 
             while (currentFriend != nullptr)
             {
-                UserNode *friendUser = network.findUser(currentFriend->friendID);
+                UserNode *friendUser = n.findUser(currentFriend->friendID);
 
                 if (friendUser != nullptr)
                 {
@@ -263,7 +250,7 @@ int main()
 
         window.draw(edges);
 
-        currentUser = network.getMasterHead();
+        currentUser = n.getMasterHead();
 
         while (currentUser != nullptr)
         {
@@ -278,7 +265,7 @@ int main()
             }
             else if (activeUserID != -1)
             {
-                UserNode *activeUser = network.findUser(activeUserID);
+                UserNode *activeUser = n.findUser(activeUserID);
                 bool isFriend = false;
 
                 if (activeUser != nullptr)
@@ -349,7 +336,7 @@ int main()
 
         if (activeUserID != -1)
         {
-            UserNode *activeUser = network.findUser(activeUserID);
+            UserNode *activeUser = n.findUser(activeUserID);
 
             if (activeUser != nullptr)
             {
@@ -390,7 +377,7 @@ int main()
 
                 while (friendList != nullptr)
                 {
-                    UserNode *friendUser = network.findUser(friendList->friendID);
+                    UserNode *friendUser = n.findUser(friendList->friendID);
 
                     if (friendUser != nullptr)
                     {
@@ -424,7 +411,7 @@ int main()
                 {
                     for (int i = 0; i < suggestionCount; i++)
                     {
-                        UserNode *suggestedUser = network.findUser(suggestions[i].userID);
+                        UserNode *suggestedUser = n.findUser(suggestions[i].userID);
 
                         if (suggestedUser != nullptr)
                         {
@@ -501,7 +488,7 @@ int main()
             window.draw(btnText);
         };
 
-        drawButton("Add User", 720.0f + sidebarOffset, 520.0f, currentState == WAITING_FOR_NODE_POS || currentState == WAITING_FOR_NODE_NAME);
+        drawButton("Add User", 720.0f + sidebarOffset, 520.0f, currentState == WAITING_FOR_NODE_POSITION || currentState == WAITING_FOR_NODE_NAME);
         drawButton("Add Friend", 905.0f + sidebarOffset, 520.0f, currentState == WAITING_FOR_EDGE_NODE1 || currentState == WAITING_FOR_EDGE_NODE2);
         drawButton("Rename User", 720.0f + sidebarOffset, 565.0f, currentState == WAITING_FOR_RENAME);
         drawButton("Delete User", 905.0f + sidebarOffset, 565.0f, false);
@@ -510,7 +497,7 @@ int main()
             Text alertText(font, "", 16);
             alertText.setFillColor(Color(255, 200, 50));
             
-            if (currentState == WAITING_FOR_NODE_POS) alertText.setString("Action: Click empty space on the canvas to place a new user node.");
+            if (currentState == WAITING_FOR_NODE_POSITION) alertText.setString("Action: Click empty space on the canvas to place a new user node.");
             else if (currentState == WAITING_FOR_NODE_NAME) alertText.setString("Action: Type new user's name and press Enter -> " + inputString);
             else if (currentState == WAITING_FOR_EDGE_NODE1) alertText.setString("Action: Click the first user node for the new friendship.");
             else if (currentState == WAITING_FOR_EDGE_NODE2) alertText.setString("Action: Click the second user node to complete the friendship.");
@@ -519,9 +506,6 @@ int main()
             alertText.setPosition(Vector2f(20.0f, 660.0f));
             window.draw(alertText);
         }
-
         window.display();
     }
-
-    return 0;
 }
