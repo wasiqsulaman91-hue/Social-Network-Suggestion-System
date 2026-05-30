@@ -98,42 +98,33 @@ void NetworkGraph::removeFriendship(int id1, int id2) {
 
 void NetworkGraph::removeUser(int targetID) {
     UserNode* userToDelete = findUser(targetID);
-    if (userToDelete == nullptr) return;
+    if (userToDelete == nullptr){ return;
+    }
+    
+    int friendIDs[50];
+    int count = 0;
 
-    FriendNode* currFriend = userToDelete->friendsHead;
-    while (currFriend != nullptr) {
-        UserNode* friendNode = findUser(currFriend->friendID);
-        if (friendNode != nullptr) {
-            FriendNode* prev = nullptr;
-            FriendNode* curr = friendNode->friendsHead;
-            while (curr != nullptr) {
-                if (curr->friendID == targetID) {
-                    if (prev != nullptr) prev->next = curr->next;
-                    else friendNode->friendsHead = curr->next;
-                    delete curr;
-                    break;
-                }
-                prev = curr;
-                curr = curr->next;
-            }
-        }
-        currFriend = currFriend->next;
+    FriendNode* curr = userToDelete->friendsHead;
+    while (curr != nullptr) {
+        friendIDs[count] = curr->friendID;
+        count++;
+        curr = curr->next;
     }
 
-    currFriend = userToDelete->friendsHead;
-    while (currFriend != nullptr) {
-        FriendNode* temp = currFriend;
-        currFriend = currFriend->next;
-        delete temp;
+    for (int i = 0; i < count; i++) {
+        removeFriendship(targetID, friendIDs[i]);
     }
-    userToDelete->friendsHead = nullptr;
 
+    // Step 3: unlink and delete the UserNode from the master list
     UserNode* prevUser = nullptr;
     UserNode* currUser = masterHead;
     while (currUser != nullptr) {
         if (currUser->id == targetID) {
-            if (prevUser != nullptr) prevUser->next = currUser->next;
-            else masterHead = currUser->next;
+            if (prevUser != nullptr){ 
+                prevUser->next = currUser->next;
+            }else{
+                 masterHead = currUser->next;
+            }
             delete currUser;
             break;
         }
