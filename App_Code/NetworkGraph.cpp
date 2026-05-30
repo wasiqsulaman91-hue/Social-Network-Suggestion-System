@@ -115,7 +115,7 @@ void NetworkGraph::removeUser(int targetID) {
         removeFriendship(targetID, friendIDs[i]);
     }
 
-    // Step 3: unlink and delete the UserNode from the master list
+
     UserNode* prevUser = nullptr;
     UserNode* currUser = masterHead;
     while (currUser != nullptr) {

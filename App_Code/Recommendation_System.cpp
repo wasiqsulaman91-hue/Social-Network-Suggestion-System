@@ -1,123 +1,79 @@
 #include "../Structures/Recommendation_System.h"
 
-int RecommendationEngine::computeMutualFriends(UserNode *masterHead, int activeUserID, Suggestion outputArray[])
-{
-    int mutualCounts[50];
-
-    for (int i = 0; i < 50; i++)
-    {
-        mutualCounts[i] = 0;
-    }
-
-    UserNode *activeUser = nullptr;
-    UserNode *currentUser = masterHead;
-
-    while (currentUser != nullptr)
-    {
-        if (currentUser->id == activeUserID)
-        {
-            activeUser = currentUser;
-            break;
+UserNode* findUserByID(UserNode* head, int id) {
+    while (head != nullptr) {
+        if (head->id == id){
+            return head;
         }
-        currentUser = currentUser->next;
+        head = head->next;
     }
+    return nullptr;
+}
 
-    if (activeUser == nullptr)
-    {
+
+int RecommendationEngine::computeMutualFriends(UserNode* masterHead, int activeUserID, Suggestion array[]){
+    int mutualCounts[50] = {0};
+
+    UserNode* activeUser = findUserByID(masterHead, activeUserID);
+
+    if(activeUser == nullptr){
         return 0;
     }
 
-    FriendNode *level1Friend = activeUser->friendsHead;
+    FriendNode* level1 = activeUser->friendsHead;
 
-    while (level1Friend != nullptr)
-    {
-        int friendID = level1Friend->friendID;
-        UserNode *friendUser = nullptr;
+    while(level1 != nullptr){
+        UserNode* friendUser = findUserByID(masterHead, level1->friendID);
 
-        currentUser = masterHead;
-        while (currentUser != nullptr)
-        {
-            if (currentUser->id == friendID)
-            {
-                friendUser = currentUser;
-                break;
-            }
-            currentUser = currentUser->next;
-        }
+        if(friendUser != nullptr){
+            FriendNode* level2 = friendUser->friendsHead;
 
-        if (friendUser != nullptr)
-        {
-            FriendNode *level2Friend = friendUser->friendsHead;
+            while(level2 != nullptr){
+                int fofID = level2->friendID;
 
-            while (level2Friend != nullptr)
-            {
-                int fofID = level2Friend->friendID;
-
-                if (fofID != activeUserID)
-                {
-                    if (!isDirectFriend(activeUser, fofID))
-                    {
-                        mutualCounts[fofID]++;
-                    }
+                if(fofID != activeUserID && !isDirectFriend(activeUser, fofID)){
+                    mutualCounts[fofID] = mutualCounts[fofID] + 1; 
                 }
-
-                level2Friend = level2Friend->next;
+                level2 = level2->next;
             }
         }
-
-        level1Friend = level1Friend->next;
+        level1 = level1->next;
     }
 
-    int suggestionCount = 0;
-
-    for (int i = 0; i < 50; i++)
-    {
-        if (mutualCounts[i] > 0)
-        {
-            outputArray[suggestionCount].userID = i;
-            outputArray[suggestionCount].mutualCount = mutualCounts[i];
-            suggestionCount++;
+    int count = 0;
+    for(int i = 0; i < 50; i++){
+        if(mutualCounts[i] > 0){
+            array[count] = Suggestion(i, mutualCounts[i]);
+            count++;
         }
     }
 
-    sortSuggestions(outputArray, suggestionCount);
-
-    return suggestionCount;
+    sortSuggestions(array, count);
+    return count;
 }
 
-bool RecommendationEngine::isDirectFriend(UserNode *user, int candidateID)
-{
-    FriendNode *currentFriend = user->friendsHead;
+bool RecommendationEngine::isDirectFriend(UserNode* user, int candidateID){
+    FriendNode* currentFriend = user->friendsHead;
 
-    while (currentFriend != nullptr)
-    {
-        if (currentFriend->friendID == candidateID)
-        {
+    while(currentFriend != nullptr){
+        if(currentFriend->friendID == candidateID){
             return true;
         }
-
         currentFriend = currentFriend->next;
     }
-
     return false;
 }
 
 void RecommendationEngine::sortSuggestions(Suggestion arr[], int count)
 {
-    for (int i = 0; i < count - 1; i++)
-    {
+    for (int i = 0; i < count - 1; i++){
         int maxIndex = i;
-
-        for (int j = i + 1; j < count; j++)
-        {
-            if (arr[j].mutualCount > arr[maxIndex].mutualCount)
-            {
+        for (int j = i + 1; j < count; j++){
+            if (arr[j].mutualCount > arr[maxIndex].mutualCount){
                 maxIndex = j;
             }
         }
-
-        if (maxIndex != i)
-        {
+        if (maxIndex != i){
             Suggestion temp = arr[i];
             arr[i] = arr[maxIndex];
             arr[maxIndex] = temp;

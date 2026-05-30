@@ -9,14 +9,15 @@
 #include "Structures/Recommendation_System.h"
 
 using namespace std;
+using namespace sf;
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode({1100, 700}), "Social Network Analyzer", sf::Style::Titlebar | sf::Style::Close);
+    RenderWindow window(VideoMode({1100, 700}), "Social Network Analyzer", Style::Titlebar | Style::Close);
 
     window.setFramerateLimit(60);
 
-    sf::Font font;
+    Font font;
     if (!font.openFromFile("arial.ttf") &&
         !font.openFromFile("C:\\Windows\\Fonts\\Arial.ttf") && 
         !font.openFromFile("C:\\Windows\\Fonts\\arial.ttf"))
@@ -66,10 +67,10 @@ int main()
     AppState currentState = NORMAL;
     string inputString = "";
     int edgeNode1 = -1;
-    sf::Vector2f newNodePos;
+    Vector2f newNodePos;
     int nextNodeID = 9;
 
-    sf::Clock animationClock;
+    Clock animationClock;
 
     while (window.isOpen())
     {
@@ -80,12 +81,12 @@ int main()
 
         while (const auto event = window.pollEvent())
         {
-            if (event->is<sf::Event::Closed>())
+            if (event->is<Event::Closed>())
             {
                 window.close();
             }
 
-            if (const auto* textEvent = event->getIf<sf::Event::TextEntered>())
+            if (const auto* textEvent = event->getIf<Event::TextEntered>())
             {
                 if (currentState == WAITING_FOR_NODE_NAME || currentState == WAITING_FOR_RENAME)
                 {
@@ -108,19 +109,19 @@ int main()
                 }
             }
 
-            if (const auto* mouseButton = event->getIf<sf::Event::MouseButtonPressed>())
+            if (const auto* mouseButton = event->getIf<Event::MouseButtonPressed>())
             {
-                if (mouseButton->button == sf::Mouse::Button::Left)
+                if (mouseButton->button == Mouse::Button::Left)
                 {
-                    sf::Vector2f mousePos(
+                    Vector2f mousePos(
                         static_cast<float>(mouseButton->position.x),
                         static_cast<float>(mouseButton->position.y));
 
                     bool buttonClicked = false;
-                    sf::FloatRect btnAddUser(sf::Vector2f(720.0f + sidebarOffset, 520.0f), sf::Vector2f(175.0f, 35.0f));
-                    sf::FloatRect btnAddEdge(sf::Vector2f(905.0f + sidebarOffset, 520.0f), sf::Vector2f(175.0f, 35.0f));
-                    sf::FloatRect btnRename(sf::Vector2f(720.0f + sidebarOffset, 565.0f), sf::Vector2f(175.0f, 35.0f));
-                    sf::FloatRect btnDelete(sf::Vector2f(905.0f + sidebarOffset, 565.0f), sf::Vector2f(175.0f, 35.0f));
+                    FloatRect btnAddUser(Vector2f(720.0f + sidebarOffset, 520.0f), Vector2f(175.0f, 35.0f));
+                    FloatRect btnAddEdge(Vector2f(905.0f + sidebarOffset, 520.0f), Vector2f(175.0f, 35.0f));
+                    FloatRect btnRename(Vector2f(720.0f + sidebarOffset, 565.0f), Vector2f(175.0f, 35.0f));
+                    FloatRect btnDelete(Vector2f(905.0f + sidebarOffset, 565.0f), Vector2f(175.0f, 35.0f));
 
                     if (btnAddUser.contains(mousePos)) { currentState = WAITING_FOR_NODE_POS; buttonClicked = true; }
                     else if (btnAddEdge.contains(mousePos)) { currentState = WAITING_FOR_EDGE_NODE1; buttonClicked = true; }
@@ -151,8 +152,8 @@ int main()
                             
                             while (clickUser != nullptr)
                             {
-                                sf::CircleShape nodeCircle(20.0f);
-                                nodeCircle.setPosition(sf::Vector2f(clickUser->x - 20.0f, clickUser->y - 20.0f));
+                                CircleShape nodeCircle(20.0f);
+                                nodeCircle.setPosition(Vector2f(clickUser->x - 20.0f, clickUser->y - 20.0f));
                                 
                                 if (nodeCircle.getGlobalBounds().contains(mousePos))
                                 {
@@ -194,38 +195,38 @@ int main()
             }
         }
 
-        window.clear(sf::Color(10, 12, 16));
+        window.clear(Color(10, 12, 16));
 
         for (int i = 0; i < 4; i++)
         {
             float radius = 70.0f + static_cast<float>(i) * 18.0f;
-            sf::CircleShape glow(radius);
+            CircleShape glow(radius);
             glow.setPointCount(60);
-            glow.setOrigin(sf::Vector2f(radius, radius));
-            glow.setPosition(sf::Vector2f(
+            glow.setOrigin(Vector2f(radius, radius));
+            glow.setPosition(Vector2f(
                 120.0f + static_cast<float>(i) * 140.0f + sin(animationTime * 0.6f + static_cast<float>(i)) * 10.0f,
                 120.0f + static_cast<float>(i % 2) * 110.0f + cos(animationTime * 0.5f + static_cast<float>(i)) * 8.0f));
-            glow.setFillColor(sf::Color(255, 255, 255, 10));
+            glow.setFillColor(Color(255, 255, 255, 10));
             window.draw(glow);
         }
 
-        sf::RectangleShape sidebar(sf::Vector2f(400.0f, 700.0f));
-        sidebar.setPosition(sf::Vector2f(700.0f + sidebarOffset, 0.0f));
-        sidebar.setFillColor(sf::Color(42, 44, 54, static_cast<uint8_t>(235.0f * sidebarAlpha)));
+        RectangleShape sidebar(Vector2f(400.0f, 700.0f));
+        sidebar.setPosition(Vector2f(700.0f + sidebarOffset, 0.0f));
+        sidebar.setFillColor(Color(42, 44, 54, static_cast<uint8_t>(235.0f * sidebarAlpha)));
         window.draw(sidebar);
 
-        sf::Text titleText(font, "Social Network Analyzer", 22);
-        titleText.setFillColor(sf::Color(255, 255, 255, static_cast<uint8_t>(255.0f * sidebarAlpha)));
-        titleText.setPosition(sf::Vector2f(720.0f + sidebarOffset, 20.0f));
-        titleText.setStyle(sf::Text::Bold);
+        Text titleText(font, "Social Network Analyzer", 22);
+        titleText.setFillColor(Color(255, 255, 255, static_cast<uint8_t>(255.0f * sidebarAlpha)));
+        titleText.setPosition(Vector2f(720.0f + sidebarOffset, 20.0f));
+        titleText.setStyle(Text::Bold);
         window.draw(titleText);
 
-        sf::Text subtitleText(font, "Click a user to view details", 14);
-        subtitleText.setFillColor(sf::Color(200, 200, 200, static_cast<uint8_t>(255.0f * sidebarAlpha)));
-        subtitleText.setPosition(sf::Vector2f(720.0f + sidebarOffset, 50.0f));
+        Text subtitleText(font, "Click a user to view details", 14);
+        subtitleText.setFillColor(Color(200, 200, 200, static_cast<uint8_t>(255.0f * sidebarAlpha)));
+        subtitleText.setPosition(Vector2f(720.0f + sidebarOffset, 50.0f));
         window.draw(subtitleText);
 
-        sf::VertexArray edges(sf::PrimitiveType::Lines);
+        VertexArray edges(PrimitiveType::Lines);
 
         UserNode *currentUser = network.getMasterHead();
 
@@ -241,13 +242,13 @@ int main()
                 {
                     if (currentUser->id < friendUser->id)
                     {
-                        sf::Vertex startVertex;
-                        startVertex.position = sf::Vector2f(currentUser->x, currentUser->y);
-                        startVertex.color = sf::Color(180, 180, 180, static_cast<uint8_t>(145.0f + 10.0f * sin(animationTime * 2.0f)));
+                        Vertex startVertex;
+                        startVertex.position = Vector2f(currentUser->x, currentUser->y);
+                        startVertex.color = Color(180, 180, 180, static_cast<uint8_t>(145.0f + 10.0f * sin(animationTime * 2.0f)));
 
-                        sf::Vertex endVertex;
-                        endVertex.position = sf::Vector2f(friendUser->x, friendUser->y);
-                        endVertex.color = sf::Color(180, 180, 180, static_cast<uint8_t>(145.0f + 10.0f * sin(animationTime * 2.0f)));
+                        Vertex endVertex;
+                        endVertex.position = Vector2f(friendUser->x, friendUser->y);
+                        endVertex.color = Color(180, 180, 180, static_cast<uint8_t>(145.0f + 10.0f * sin(animationTime * 2.0f)));
 
                         edges.append(startVertex);
                         edges.append(endVertex);
@@ -266,13 +267,13 @@ int main()
 
         while (currentUser != nullptr)
         {
-            sf::Color nodeColor = sf::Color(255, 255, 255);
+            Color nodeColor = Color(255, 255, 255);
             float nodeBob = sin(animationTime * 1.6f + static_cast<float>(currentUser->id)) * 3.0f;
             float nodeScale = 1.0f + sin(animationTime * 2.0f + static_cast<float>(currentUser->id)) * 0.03f;
 
             if (activeUserID != -1 && currentUser->id == activeUserID)
             {
-                nodeColor = sf::Color(70, 130, 255);
+                nodeColor = Color(70, 130, 255);
                 nodeScale = 1.08f + sin(animationTime * 4.0f) * 0.04f;
             }
             else if (activeUserID != -1)
@@ -297,7 +298,7 @@ int main()
 
                 if (isFriend)
                 {
-                    nodeColor = sf::Color(80, 200, 120);
+                    nodeColor = Color(80, 200, 120);
                 }
                 else
                 {
@@ -314,31 +315,31 @@ int main()
 
                     if (isSuggested)
                     {
-                        nodeColor = sf::Color(255, 215, 0);
+                        nodeColor = Color(255, 215, 0);
                         nodeScale = 1.03f + sin(animationTime * 3.0f + static_cast<float>(currentUser->id)) * 0.02f;
                     }
                     else
                     {
-                        nodeColor = sf::Color(255, 255, 255);
+                        nodeColor = Color(255, 255, 255);
                     }
                 }
             }
 
-            sf::CircleShape nodeCircle(20.0f);
+            CircleShape nodeCircle(20.0f);
             nodeCircle.setPointCount(50);
-            nodeCircle.setOrigin(sf::Vector2f(20.0f, 20.0f));
-            nodeCircle.setScale(sf::Vector2f(nodeScale, nodeScale));
-            nodeCircle.setPosition(sf::Vector2f(currentUser->x, currentUser->y + nodeBob));
+            nodeCircle.setOrigin(Vector2f(20.0f, 20.0f));
+            nodeCircle.setScale(Vector2f(nodeScale, nodeScale));
+            nodeCircle.setPosition(Vector2f(currentUser->x, currentUser->y + nodeBob));
             nodeCircle.setFillColor(nodeColor);
             nodeCircle.setOutlineThickness(2.0f);
-            nodeCircle.setOutlineColor(sf::Color(255, 255, 255));
+            nodeCircle.setOutlineColor(Color(255, 255, 255));
             window.draw(nodeCircle);
 
-            sf::Text nameLabel(font, currentUser->name, 12);
-            nameLabel.setFillColor(sf::Color(235, 235, 235));
+            Text nameLabel(font, currentUser->name, 12);
+            nameLabel.setFillColor(Color(235, 235, 235));
 
-            sf::FloatRect textBounds = nameLabel.getLocalBounds();
-            nameLabel.setPosition(sf::Vector2f(
+            FloatRect textBounds = nameLabel.getLocalBounds();
+            nameLabel.setPosition(Vector2f(
                 currentUser->x - (textBounds.position.x + textBounds.size.x / 2.0f),
                 currentUser->y + 25.0f - textBounds.position.y));
             window.draw(nameLabel);
@@ -352,15 +353,15 @@ int main()
 
             if (activeUser != nullptr)
             {
-                sf::Text profileHeader(font, "Active User Profile", 18);
-                profileHeader.setFillColor(sf::Color(70, 130, 255));
-                profileHeader.setPosition(sf::Vector2f(720.0f + sidebarOffset, 90.0f));
-                profileHeader.setStyle(sf::Text::Bold);
+                Text profileHeader(font, "Active User Profile", 18);
+                profileHeader.setFillColor(Color(70, 130, 255));
+                profileHeader.setPosition(Vector2f(720.0f + sidebarOffset, 90.0f));
+                profileHeader.setStyle(Text::Bold);
                 window.draw(profileHeader);
 
-                sf::Text userName(font, "Name: " + activeUser->name, 16);
-                userName.setFillColor(sf::Color(255, 255, 255));
-                userName.setPosition(sf::Vector2f(720.0f + sidebarOffset, 120.0f));
+                Text userName(font, "Name: " + activeUser->name, 16);
+                userName.setFillColor(Color(255, 255, 255));
+                userName.setPosition(Vector2f(720.0f + sidebarOffset, 120.0f));
                 window.draw(userName);
 
                 int friendCount = 0;
@@ -373,15 +374,15 @@ int main()
 
                 ostringstream oss;
                 oss << "Direct Friends: " << friendCount;
-                sf::Text friendCountText(font, oss.str(), 16);
-                friendCountText.setFillColor(sf::Color(255, 255, 255));
-                friendCountText.setPosition(sf::Vector2f(720.0f + sidebarOffset, 145.0f));
+                Text friendCountText(font, oss.str(), 16);
+                friendCountText.setFillColor(Color(255, 255, 255));
+                friendCountText.setPosition(Vector2f(720.0f + sidebarOffset, 145.0f));
                 window.draw(friendCountText);
 
-                sf::Text friendsListHeader(font, "Friend List:", 14);
-                friendsListHeader.setFillColor(sf::Color(80, 200, 120));
-                friendsListHeader.setPosition(sf::Vector2f(720.0f + sidebarOffset, 175.0f));
-                friendsListHeader.setStyle(sf::Text::Bold);
+                Text friendsListHeader(font, "Friend List:", 14);
+                friendsListHeader.setFillColor(Color(80, 200, 120));
+                friendsListHeader.setPosition(Vector2f(720.0f + sidebarOffset, 175.0f));
+                friendsListHeader.setStyle(Text::Bold);
                 window.draw(friendsListHeader);
 
                 FriendNode *friendList = activeUser->friendsHead;
@@ -393,9 +394,9 @@ int main()
 
                     if (friendUser != nullptr)
                     {
-                        sf::Text friendName(font, "- " + friendUser->name, 13);
-                        friendName.setFillColor(sf::Color(200, 200, 200, static_cast<uint8_t>(255.0f * sidebarAlpha)));
-                        friendName.setPosition(sf::Vector2f(730.0f + sidebarOffset, static_cast<float>(yOffset)));
+                        Text friendName(font, "- " + friendUser->name, 13);
+                        friendName.setFillColor(Color(200, 200, 200, static_cast<uint8_t>(255.0f * sidebarAlpha)));
+                        friendName.setPosition(Vector2f(730.0f + sidebarOffset, static_cast<float>(yOffset)));
                         window.draw(friendName);
 
                         yOffset += 20;
@@ -404,19 +405,19 @@ int main()
                     friendList = friendList->next;
                 }
 
-                sf::Text recommendHeader(font, "People You May Know:", 16);
-                recommendHeader.setFillColor(sf::Color(255, 215, 0));
-                recommendHeader.setPosition(sf::Vector2f(720.0f + sidebarOffset, static_cast<float>(yOffset + 20)));
-                recommendHeader.setStyle(sf::Text::Bold);
+                Text recommendHeader(font, "People You May Know:", 16);
+                recommendHeader.setFillColor(Color(255, 215, 0));
+                recommendHeader.setPosition(Vector2f(720.0f + sidebarOffset, static_cast<float>(yOffset + 20)));
+                recommendHeader.setStyle(Text::Bold);
                 window.draw(recommendHeader);
 
                 yOffset += 50;
 
                 if (suggestionCount == 0)
                 {
-                    sf::Text noSuggestions(font, "No suggestions available", 13);
-                    noSuggestions.setFillColor(sf::Color(150, 150, 150));
-                    noSuggestions.setPosition(sf::Vector2f(730.0f + sidebarOffset, static_cast<float>(yOffset)));
+                    Text noSuggestions(font, "No suggestions available", 13);
+                    noSuggestions.setFillColor(Color(150, 150, 150));
+                    noSuggestions.setPosition(Vector2f(730.0f + sidebarOffset, static_cast<float>(yOffset)));
                     window.draw(noSuggestions);
                 }
                 else
@@ -432,9 +433,9 @@ int main()
                                            << " (" << suggestions[i].mutualCount
                                            << " mutual)";
 
-                            sf::Text suggestion(font, suggestionText.str(), 13);
-                            suggestion.setFillColor(sf::Color(220, 220, 220, static_cast<uint8_t>(255.0f * sidebarAlpha)));
-                            suggestion.setPosition(sf::Vector2f(730.0f + sidebarOffset, static_cast<float>(yOffset)));
+                            Text suggestion(font, suggestionText.str(), 13);
+                            suggestion.setFillColor(Color(220, 220, 220, static_cast<uint8_t>(255.0f * sidebarAlpha)));
+                            suggestion.setPosition(Vector2f(730.0f + sidebarOffset, static_cast<float>(yOffset)));
                             window.draw(suggestion);
 
                             yOffset += 22;
@@ -445,58 +446,58 @@ int main()
         }
         else
         {
-            sf::Text instructionText(font, "Select a user node\nto view their profile\nand friend suggestions", 16);
-            instructionText.setFillColor(sf::Color(220, 220, 220));
-            instructionText.setPosition(sf::Vector2f(750.0f + sidebarOffset, 250.0f));
+            Text instructionText(font, "Select a user node\nto view their profile\nand friend suggestions", 16);
+            instructionText.setFillColor(Color(220, 220, 220));
+            instructionText.setPosition(Vector2f(750.0f + sidebarOffset, 250.0f));
             window.draw(instructionText);
         }
 
 
-        sf::CircleShape blueCircle(8.0f);
+        CircleShape blueCircle(8.0f);
         blueCircle.setPointCount(30);
-        blueCircle.setPosition(sf::Vector2f(720.0f + sidebarOffset, 645.0f));
-        blueCircle.setFillColor(sf::Color(70, 130, 255));
+        blueCircle.setPosition(Vector2f(720.0f + sidebarOffset, 645.0f));
+        blueCircle.setFillColor(Color(70, 130, 255));
         window.draw(blueCircle);
 
-        sf::Text blueLabel(font, "Active User", 12);
-        blueLabel.setFillColor(sf::Color(200, 200, 200));
-        blueLabel.setPosition(sf::Vector2f(740.0f + sidebarOffset, 645.0f));
+        Text blueLabel(font, "Active User", 12);
+        blueLabel.setFillColor(Color(200, 200, 200));
+        blueLabel.setPosition(Vector2f(740.0f + sidebarOffset, 645.0f));
         window.draw(blueLabel);
 
-        sf::CircleShape greenCircle(8.0f);
+        CircleShape greenCircle(8.0f);
         greenCircle.setPointCount(30);
-        greenCircle.setPosition(sf::Vector2f(850.0f + sidebarOffset, 645.0f));
-        greenCircle.setFillColor(sf::Color(80, 200, 120));
+        greenCircle.setPosition(Vector2f(850.0f + sidebarOffset, 645.0f));
+        greenCircle.setFillColor(Color(80, 200, 120));
         window.draw(greenCircle);
 
-        sf::Text greenLabel(font, "Direct Friend", 12);
-        greenLabel.setFillColor(sf::Color(200, 200, 200));
-        greenLabel.setPosition(sf::Vector2f(870.0f + sidebarOffset, 645.0f));
+        Text greenLabel(font, "Direct Friend", 12);
+        greenLabel.setFillColor(Color(200, 200, 200));
+        greenLabel.setPosition(Vector2f(870.0f + sidebarOffset, 645.0f));
         window.draw(greenLabel);
 
-        sf::CircleShape goldCircle(8.0f);
+        CircleShape goldCircle(8.0f);
         goldCircle.setPointCount(30);
-        goldCircle.setPosition(sf::Vector2f(990.0f + sidebarOffset, 645.0f));
-        goldCircle.setFillColor(sf::Color(255, 215, 0));
+        goldCircle.setPosition(Vector2f(990.0f + sidebarOffset, 645.0f));
+        goldCircle.setFillColor(Color(255, 215, 0));
         window.draw(goldCircle);
 
-        sf::Text goldLabel(font, "Suggested", 12);
-        goldLabel.setFillColor(sf::Color(200, 200, 200));
-        goldLabel.setPosition(sf::Vector2f(1010.0f + sidebarOffset, 645.0f));
+        Text goldLabel(font, "Suggested", 12);
+        goldLabel.setFillColor(Color(200, 200, 200));
+        goldLabel.setPosition(Vector2f(1010.0f + sidebarOffset, 645.0f));
         window.draw(goldLabel);
 
         auto drawButton = [&](const string& text, float x, float y, bool active) {
-            sf::RectangleShape btn(sf::Vector2f(175.0f, 35.0f));
-            btn.setPosition(sf::Vector2f(x, y));
-            btn.setFillColor(active ? sf::Color(100, 150, 200, 200) : sf::Color(60, 65, 75, 200));
+            RectangleShape btn(Vector2f(175.0f, 35.0f));
+            btn.setPosition(Vector2f(x, y));
+            btn.setFillColor(active ? Color(100, 150, 200, 200) : Color(60, 65, 75, 200));
             btn.setOutlineThickness(1.0f);
-            btn.setOutlineColor(sf::Color(100, 100, 100));
+            btn.setOutlineColor(Color(100, 100, 100));
             window.draw(btn);
             
-            sf::Text btnText(font, text, 14);
-            btnText.setFillColor(sf::Color::White);
-            sf::FloatRect textBounds = btnText.getLocalBounds();
-            btnText.setPosition(sf::Vector2f(x + (175.0f - textBounds.size.x) / 2.0f, y + 8.0f));
+            Text btnText(font, text, 14);
+            btnText.setFillColor(Color::White);
+            FloatRect textBounds = btnText.getLocalBounds();
+            btnText.setPosition(Vector2f(x + (175.0f - textBounds.size.x) / 2.0f, y + 8.0f));
             window.draw(btnText);
         };
 
@@ -506,8 +507,8 @@ int main()
         drawButton("Delete User", 905.0f + sidebarOffset, 565.0f, false);
 
         if (currentState != NORMAL) {
-            sf::Text alertText(font, "", 16);
-            alertText.setFillColor(sf::Color(255, 200, 50));
+            Text alertText(font, "", 16);
+            alertText.setFillColor(Color(255, 200, 50));
             
             if (currentState == WAITING_FOR_NODE_POS) alertText.setString("Action: Click empty space on the canvas to place a new user node.");
             else if (currentState == WAITING_FOR_NODE_NAME) alertText.setString("Action: Type new user's name and press Enter -> " + inputString);
@@ -515,7 +516,7 @@ int main()
             else if (currentState == WAITING_FOR_EDGE_NODE2) alertText.setString("Action: Click the second user node to complete the friendship.");
             else if (currentState == WAITING_FOR_RENAME) alertText.setString("Action: Type new name and press Enter -> " + inputString);
             
-            alertText.setPosition(sf::Vector2f(20.0f, 660.0f));
+            alertText.setPosition(Vector2f(20.0f, 660.0f));
             window.draw(alertText);
         }
 
